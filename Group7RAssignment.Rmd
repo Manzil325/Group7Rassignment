@@ -1,0 +1,128 @@
+---
+title: "RAssignment"
+author: "Group7"
+date: "2024-06-14"
+output: word_document
+---
+```{r}
+# Load necessary libraries
+library(dplyr)
+library(ggplot2)
+library(readxl)
+
+# 1. Load the dataset
+# Description: Load the dataset from the specified file path.
+file_path <- "C:/Users/acer/OneDrive/Desktop/2nd Semester/R Programming/Assignment/File/dataset.xlsx"
+dataset <- read_excel(file_path, sheet = "Worksheet")
+
+# 2. Print the structure of your dataset
+# Description: Print the structure of the dataset to understand its format and variables.
+cat("2. Structure of the dataset:\n")
+str(dataset)
+
+# 3. List the variables in your dataset
+# Description: List all the variables present in the dataset.
+cat("3. Variables in the dataset:\n")
+print(names(dataset))
+
+# 4. Print the top 15 rows of your dataset
+# Description: Display the top 15 rows of the dataset to get an overview of the data.
+cat("4. Top 15 rows of the dataset:\n")
+print(head(dataset, 15))
+
+# 5. Write a user-defined function using any of the variables from the dataset
+# Description: Define a function to calculate the discounted price of a phone based on a discount rate.
+discounted_price <- function(price, discount_rate) {
+  return(price - (price * discount_rate / 100))
+}
+
+# 6. Use data manipulation techniques and filter rows based on any logical criteria that exist in your dataset
+# Description: Filter the dataset to include only phones with price > 500 and rating > 75.
+filtered_dataset <- dataset %>% filter(price > 500, rating > 75)
+cat("6. Filtered dataset (phones with price > 500 and rating > 75):\n")
+print(filtered_dataset)
+
+# 7. Identify the dependent & independent variables and use reshaping techniques and create a new data frame by joining those variables from your dataset
+# Description: Create a new data frame by separating dependent (price) and independent variables and then joining them.
+independent_vars <- dataset %>% select(-price)
+dependent_var <- dataset %>% select(price)
+new_dataset <- cbind(dependent_var, independent_vars)
+cat("7. New data frame with dependent and independent variables:\n")
+print(new_dataset)
+
+# 8. Remove missing values in your dataset
+# Description: Remove rows with missing values from the dataset.
+clean_dataset <- na.omit(dataset)
+cat("8. Dataset after removing missing values:\n")
+print(clean_dataset)
+
+# 9. Identify and remove duplicated data in your dataset
+# Description: Remove duplicate rows from the dataset.
+no_duplicates_dataset <- clean_dataset %>% distinct()
+cat("9. Dataset after removing duplicates:\n")
+print(no_duplicates_dataset)
+
+# 10. Reorder multiple rows in descending order
+# Description: Sort the dataset in descending order based on the price column.
+sorted_dataset <- no_duplicates_dataset %>% arrange(desc(price))
+cat("10. Dataset sorted in descending order by price:\n")
+print(sorted_dataset)
+
+# 11. Rename some of the column names in your dataset
+# Description: Rename selected columns in the dataset for better readability.
+renamed_dataset <- no_duplicates_dataset %>% rename(
+  BrandName = brand_name,
+  ModelName = model,
+  Price = price
+)
+cat("11. Dataset with renamed columns:\n")
+print(renamed_dataset)
+
+# 12. Add new variables in your data frame by using a mathematical function (e.g., multiply an existing column by 2)
+# Description: Add a new variable 'DoublePrice' by multiplying the price column by 2.
+new_var_dataset <- no_duplicates_dataset %>% mutate(DoublePrice = price * 2)
+cat("12. Dataset with new variable 'DoublePrice':\n")
+print(new_var_dataset)
+
+# 13. Create a training set using random number generator engine
+# Description: Create a training set containing 70% of the data using a random sampling method.
+set.seed(123)  # Ensures reproducibility of the random sample
+training_set <- no_duplicates_dataset %>% sample_frac(0.7)
+cat("13. Training set (70% of the data):\n")
+print(training_set)
+
+# 14. Print the summary statistics of your dataset
+# Description: Print summary statistics for the dataset to understand the distribution of values.
+cat("14. Summary statistics of the dataset:\n")
+print(summary(no_duplicates_dataset))
+
+# 15. Perform the following statistical functions using any numerical variable
+# Description: Calculate mean, median, mode, and range for the 'price' variable.
+mean_price <- mean(no_duplicates_dataset$price)
+median_price <- median(no_duplicates_dataset$price)
+mode_price <- as.numeric(names(sort(table(no_duplicates_dataset$price), decreasing=TRUE)[1]))
+range_price <- range(no_duplicates_dataset$price)
+
+cat("15. Statistical functions:\n")
+cat("Mean Price:", mean_price, "\n")
+cat("Median Price:", median_price, "\n")
+cat("Mode Price:", mode_price, "\n")
+cat("Range of Price:", range_price, "\n")
+
+# 16. Plot a scatter plot for any 2 variables in your dataset
+# Description: Create a scatter plot of 'rating' vs 'price'.
+ggplot(no_duplicates_dataset, aes(x = rating, y = price)) + 
+  geom_point() + 
+  labs(title = "16. Scatter plot of Rating vs Price", x = "Rating", y = "Price")
+
+# 17. Plot a bar plot for any 2 variables in your dataset
+# Description: Create a bar plot of 'has_5g' vs 'price'.
+ggplot(no_duplicates_dataset, aes(x = factor(has_5g), y = price)) + 
+  geom_bar(stat = "identity") + 
+  labs(title = "17. Bar plot of 5G vs Price", x = "5G Available", y = "Price")
+
+# 18. Find the correlation between any 2 variables by applying Pearson correlation
+# Description: Calculate the Pearson correlation between 'rating' and 'price'.
+correlation <- cor(no_duplicates_dataset$rating, no_duplicates_dataset$price, method = "pearson")
+cat("18. Pearson Correlation between Rating and Price:", correlation, "\n")
+```
